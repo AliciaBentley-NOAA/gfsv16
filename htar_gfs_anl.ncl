@@ -148,7 +148,7 @@ print("======================")
        else
           print("Downloading GFS analysis file from HPSS...")
 
-	  gfs_cdate3 = cd_inv_calendar(2020,1,1,00,00,00,timeunits,0)      ; Specify date formating changed
+	  gfs_cdate3 = cd_inv_calendar(2020,2,26,00,00,00,timeunits,0)      ; Specify date formating changed
           gfs_cdate2 = cd_inv_calendar(2019,6,12,00,00,00,timeunits,0)      ; Specify date formating changed
           gfs_cdate1 = cd_inv_calendar(2017,7,20,00,00,00,timeunits,0)      ; Specify date formating changed
           
@@ -166,8 +166,8 @@ print("thisdate: "+modelstrings)
                 	" ./gfs."+ymd+".t"+hour+"z.pgrb2.0p25.f000.grib2"
           	system(cmd)
 
-                cmd = "rm -fR gfs."+ymd+hour+"/"
-                system(cmd)
+;                cmd = "rm -fR gfs."+ymd+"/"
+;                system(cmd)
 
            else if (thisdate .ge. gfs_cdate2 .and. thisdate .lt. gfs_cdate3) then
                 print("Valid date is after GFS moved to Dell")
@@ -181,8 +181,9 @@ print("thisdate: "+modelstrings)
                         " ./gfs."+ymd+".t"+hour+"z.pgrb2.0p25.f000.grib2"
                 system(cmd)
 
-                cmd = "rm -fR gfs."+ymd+hour+"/"
-                system(cmd)
+;                cmd = "rm -fR gfs."+ymd+"/"
+;                print(cmd)
+;                system(cmd)
 
            else if (thisdate .ge. gfs_cdate1 .and. thisdate .lt. gfs_cdate2) then
                 print("Valid date is before GFS moved to Dell")
@@ -196,8 +197,8 @@ print("thisdate: "+modelstrings)
                         " ./gfs."+ymd+".t"+hour+"z.pgrb2.0p25.f000.grib2"
                 system(cmd)
 
-                cmd = "rm -fR gfs."+ymd+hour+"/"
-                system(cmd)
+;                cmd = "rm -fR gfs."+ymd+hour+"/"
+;                system(cmd)
 
            else if (thisdate .lt. gfs_cdate1) then
                 print("Valid date is before GFS name change at 0000 UTC 20 July 2017")
@@ -211,8 +212,8 @@ print("thisdate: "+modelstrings)
                         " ./gfs."+ymd+".t"+hour+"z.pgrb2.0p25.f000.grib2"
                 system(cmd)
 
-                cmd = "rm -fR gfs."+ymd+hour+"/"
-                system(cmd)
+;                cmd = "rm -fR gfs."+ymd+hour+"/"
+;                system(cmd)
 
            end if
            end if
@@ -261,10 +262,7 @@ thisdate_m6h = thisdate - 6
        else
           print("Downloading GFS analysis file from HPSS...")
 
-          gfs_cdate2 = cd_inv_calendar(2019,6,12,00,00,00,timeunits,0)      ; Specify date formating changed
-          gfs_cdate1 = cd_inv_calendar(2017,7,20,00,00,00,timeunits,0)      ; Specify date formating changed
-
-print("thisdate_m6h: "+newstrings)
+       print("thisdate_m6h: "+newstrings)
 
           if (thisdate_m6h .ge. gfs_cdate3) then
                 print("Valid date is after GFS naming convention was FINALLY corrected!")
@@ -278,8 +276,9 @@ print("thisdate_m6h: "+newstrings)
                         " ./gfs."+nymd+".t"+nhour+"z.pgrb2.0p25.f006.grib2"
                 system(cmd)
 
-                cmd = "rm -fR gfs."+nymd+nhour+"/"
-                system(cmd)
+;                cmd = "rm -fR gfs."+nymd+"/"
+;                print(cmd)
+;                system(cmd)
 
            else if (thisdate_m6h .ge. gfs_cdate2) .and. (thisdate_m6h .lt. gfs_cdate3) then
                 print("Valid date is after GFS moved to Dell")
@@ -293,8 +292,8 @@ print("thisdate_m6h: "+newstrings)
                         " ./gfs."+nymd+".t"+nhour+"z.pgrb2.0p25.f006.grib2"
                 system(cmd)
 
-                cmd = "rm -fR gfs."+nymd+nhour+"/"
-                system(cmd)
+;                cmd = "rm -fR gfs."+nymd+"/"
+;                system(cmd)
 
            else if (thisdate_m6h .ge. gfs_cdate1) .and. (thisdate_m6h .lt. gfs_cdate2) then
                 print("Valid date is before GFS moved to Dell")
@@ -308,8 +307,8 @@ print("thisdate_m6h: "+newstrings)
                         " ./gfs."+nymd+".t"+nhour+"z.pgrb2.0p25.f006.grib2"
                 system(cmd)
 
-                cmd = "rm -fR gfs."+nymd+nhour+"/"
-                system(cmd)
+;                cmd = "rm -fR gfs."+nymd+nhour+"/"
+;                system(cmd)
 
            else if (thisdate_m6h .lt. gfs_cdate1) then
                 print("Valid date is before GFS name change at 0000 UTC 20 July 2017")
@@ -323,8 +322,8 @@ print("thisdate_m6h: "+newstrings)
                         " ./gfs."+nymd+".t"+nhour+"z.pgrb2.0p25.f006.grib2"
                 system(cmd)
 
-                cmd = "rm -fR gfs."+nymd+nhour+"/"
-                system(cmd)
+;                cmd = "rm -fR gfs."+nymd+nhour+"/"
+;                system(cmd)
 
            end if
            end if
@@ -340,13 +339,19 @@ end do
 
 ;-------------------------------------------------------------------------------
 
-cmd = "mkdir -p ../analyses/"
+cmd = "mkdir -p ../../analyses/"
 print(cmd)
 system(cmd)
 
-cmd2 = "'mv' gfs*.grib2 ../analyses/."
+cmd2 = "'mv' gfs.*.grib2 ../../analyses/."
 print(cmd2)
 system(cmd2)
+
+;-------------------------------------------------------------------------------
+
+;system("sleep 20")
+;cmd = "rm -fR gfs.*/"
+;system(cmd)
 
 ;-------------------------------------------------------------------------------
 
