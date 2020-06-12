@@ -21,7 +21,7 @@ cat > ${DATA_PATH}/${CASE}/${CYCLE}/analyses/htar_st4_anl.csh <<EOF
 #SBATCH --output=st4_anl_htar.%j.out
 #SBATCH --ntasks=1
 #SBATCH --partition=service
-#SBATCH --time=8:00:00
+#SBATCH --time=3:30:00
 
 cd ${DATA_PATH}/${CASE}/${CYCLE}/analyses
 

@@ -21,7 +21,7 @@ cat > ${DATA_PATH}/${CASE}/${CYCLE}/htar_retros_prod.csh <<EOF
 #SBATCH --output=retros_prod_htar.%j.out
 #SBATCH --ntasks=1
 #SBATCH --partition=service
-#SBATCH --time=8:00:00
+#SBATCH --time=2:00:00
 
 cd ${DATA_PATH}/${CASE}/${CYCLE}/
 
