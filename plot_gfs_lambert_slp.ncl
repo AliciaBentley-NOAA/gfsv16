@@ -343,7 +343,7 @@ system("mkdir -p "+plot_dir)
   hres@cnLabelMasking=True
   hres@cnLineLabelBackgroundColor=-1
   hres@cnLineLabelAngleF=0.0
-  hres@cnLineThicknessF=4.0
+  hres@cnLineThicknessF=2.5
   hres@cnLineLabelFontHeightF=.009
   hres@cnLineLabelsOn=True
   hres@cnLineColor="black"
@@ -356,7 +356,11 @@ system("mkdir -p "+plot_dir)
   hres@gsnFrame=False
 
   ;print("plotting height")
+  plot_heightprod=gsn_csm_contour(wks,slpprod,hres)
+  plot_heightpara=gsn_csm_contour(wks,slppara,hres)
   plot_heightanl=gsn_csm_contour(wks,slp_anl,hres)
+  overlay(plot(0),plot_heightprod)
+  overlay(plot(1),plot_heightpara)
   overlay(plot(3),plot_heightanl)
 
 ;-------------------------------------------------

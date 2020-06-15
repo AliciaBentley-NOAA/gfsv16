@@ -157,7 +157,7 @@ print("======================")
           system("pwd")
        end if
 
-       para=addfile(parafile_gfs,"r")
+       para_gfs=addfile("gfsv16."+ymdm+".t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))+".grib2","r")
 
 ; ----------------------------------------------------------------------------------
 
@@ -170,72 +170,37 @@ print("======================")
           system("pwd")
        end if
 
-       prod=addfile(prodfile_gfs,"r")
+       prod_gfs=addfile("gfsv15."+ymdm+".t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))+".grib2","r")
 
 ; ============================================================================
 ; ======================= Download data ======================================
 ; ============================================================================ 
 
-    ptypesprod=new((/721,1440/),float)
-    ptypespara=new((/721,1440/),float)
-    isprecip=new((/721,1440/),float)
+if (fhours(h).eq.0) then
+   slpprod = prod_gfs->TMP_P0_L103_GLL0({2},:,:)
+   slppara = para_gfs->TMP_P0_L103_GLL0({2},:,:)
+   slpprod=slpprod*0.
+   slppara=slppara*0.
+else if (fhours(h).eq.6) then
+   slpprod = prod_gfs->TCDC_P8_L214_GLL0_avg
+   slppara = para_gfs->TCDC_P8_L214_GLL0_avg
+else if (fhours(h).ge.12) then
+   slpprod = prod_gfs->TCDC_P8_L214_GLL0_avg6h
+   slppara = para_gfs->TCDC_P8_L214_GLL0_avg6h
+end if
+end if
+end if
 
-    if (fhours(h).eq.0) then
-       tempprod=prod->TMP_P0_L103_GLL0({2},:,:)
-       temppara=para->TMP_P0_L103_GLL0({2},:,:)
-       ptypesprod(:,:)=where(tempprod.gt.0,0,ptypesprod(:,:))
-       ptypespara(:,:)=where(tempprod.gt.0,0,ptypespara(:,:))
-       tstring="P-Type (6-h avg)"
+   dif = slpprod
+   dif = slppara - slpprod
 
-    else if (fhours(h).eq.6) then
-       catsnowprod=prod->CSNOW_P8_L1_GLL0_avg
-       catrainprod=prod->CRAIN_P8_L1_GLL0_avg
-       catfrzrprod=prod->CFRZR_P8_L1_GLL0_avg
-       caticepprod=prod->CICEP_P8_L1_GLL0_avg
-       catsnowpara=para->CSNOW_P8_L1_GLL0_avg
-       catrainpara=para->CRAIN_P8_L1_GLL0_avg
-       catfrzrpara=para->CFRZR_P8_L1_GLL0_avg
-       caticeppara=para->CICEP_P8_L1_GLL0_avg
-       ptypesprod(:,:)=where(catsnowprod.eq.1,1,ptypesprod(:,:))
-       ptypesprod(:,:)=where(catrainprod.eq.1,4,ptypesprod(:,:))
-       ptypesprod(:,:)=where(catfrzrprod.eq.1,3,ptypesprod(:,:))
-       ptypesprod(:,:)=where(caticepprod.eq.1,2,ptypesprod(:,:))
-       ptypespara(:,:)=where(catsnowpara.eq.1,1,ptypespara(:,:))
-       ptypespara(:,:)=where(catrainpara.eq.1,4,ptypespara(:,:))
-       ptypespara(:,:)=where(catfrzrpara.eq.1,3,ptypespara(:,:))
-       ptypespara(:,:)=where(caticeppara.eq.1,2,ptypespara(:,:))
-       isprecip(:,:)=where((catsnowpara.ne.1).and.(catrainpara.ne.1).and.(catfrzrpara.ne.1).and.(caticeppara.ne.1),0,ptypespara(:,:))
-       tstring="P-Type (6-h avg)"
+;   dif_anl = slp_anl
+;   dif_anl = slppara - slp_anl
 
-    else
-       catsnowprod=prod->CSNOW_P8_L1_GLL0_avg6h
-       catrainprod=prod->CRAIN_P8_L1_GLL0_avg6h
-       catfrzrprod=prod->CFRZR_P8_L1_GLL0_avg6h
-       caticepprod=prod->CICEP_P8_L1_GLL0_avg6h
-       catsnowpara=para->CSNOW_P8_L1_GLL0_avg6h
-       catrainpara=para->CRAIN_P8_L1_GLL0_avg6h
-       catfrzrpara=para->CFRZR_P8_L1_GLL0_avg6h
-       caticeppara=para->CICEP_P8_L1_GLL0_avg6h
-       ptypesprod(:,:)=where(catsnowprod.eq.1,1,ptypesprod(:,:))
-       ptypesprod(:,:)=where(catrainprod.eq.1,4,ptypesprod(:,:))
-       ptypesprod(:,:)=where(catfrzrprod.eq.1,3,ptypesprod(:,:))
-       ptypesprod(:,:)=where(caticepprod.eq.1,2,ptypesprod(:,:))
-       ptypespara(:,:)=where(catsnowpara.eq.1,1,ptypespara(:,:))
-       ptypespara(:,:)=where(catrainpara.eq.1,4,ptypespara(:,:))
-       ptypespara(:,:)=where(catfrzrpara.eq.1,3,ptypespara(:,:))
-       ptypespara(:,:)=where(caticeppara.eq.1,2,ptypespara(:,:))
-       isprecip(:,:)=where((catsnowpara.ne.1).and.(catrainpara.ne.1).and.(catfrzrpara.ne.1).and.(caticeppara.ne.1),0,ptypespara(:,:))
-       tstring="P-Type (6-h avg)"
-    end if
-    end if
+;   slpprod = smth9_Wrap(slpprod,0.50,-0.25,False)
+;   slppara = smth9_Wrap(slppara,0.50,-0.25,False)
+;   slp_anl = smth9_Wrap(slp_anl,0.50,0.25,False)
 
-   dif=ptypesprod
-   copy_VarCoords(tempprod,ptypesprod)
-   copy_VarCoords(temppara,ptypespara)
-   dif=ptypespara-ptypesprod
-   dif(:,:)=where((isprecip.eq.0),0,dif(:,:))
-
-   copy_VarCoords(tempprod,isprecip)
 
 ; ============================================================================
 ; ======================= Make plot ==========================================
@@ -243,10 +208,10 @@ print("======================")
 plot_dir = image_dir+"/"+casename+"/images/"+scriptyyyymmddhh+"/"
 system("mkdir -p "+plot_dir)
 
-  wks  = gsn_open_wks("png", plot_dir+"/gfs_"+scriptregion+"_ptype_"+casename+"_"+sprinti("%0.1i",(h)))       
-  ;gsn_define_colormap(wks,"BlueWhiteOrangeRed") 
-  gsn_define_colormap(wks,"temp")
-  ;gsn_define_colormap(wks,"MPL_jet") 
+  wks  = gsn_open_wks("png", plot_dir+"/gfs_"+scriptregion+"_lowcloud_"+casename+"_"+sprinti("%0.1i",(h)))       
+;  gsn_define_colormap(wks,"precip_11lev")
+;  gsn_define_colormap(wks,"MPL_Blues") 
+  gsn_define_colormap(wks,"MPL_Greys")
 
   plot=new(3,"graphic")
 
@@ -256,18 +221,15 @@ system("mkdir -p "+plot_dir)
   res@mpMaxLatF                = maxlat
   res@mpMinLonF                = minlon
   res@mpMaxLonF                = maxlon
-
-  res@lbLabelAlignment="BoxCenters"
-  res@lbLabelStrings=(/"no precip (0)","snow (1)","ice pellets (2)","freezing rain (3)","rain (4)"/)
   ;res@mpOutlineBoundarySets="AllBoundaries"
   res@mpOutlineBoundarySets="GeophysicalAndUSStates"
   res@mpDataBaseVersion="MediumRes"
   res@gsnMaximize=True
   res@tmXBLabelFontHeightF=.008
   res@tmYLLabelFontHeightF=.008
-  res@gsnRightString=tstring
+  res@gsnRightString="6-h Avg Low Cloud"
   res@gsnAddCyclic=False
-  res@gsnLeftString="GFS Fcst init "+hourm+"Z "+daym+" "+months(toint(monthm))+ " " +yearm+" valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year+ " (F"+sprinti("%0.2i",fhours(h))+")"
+  res@gsnLeftString="GFSv15 fcst init. "+hourm+"Z "+daym+" "+months(toint(monthm))+ " " +yearm+" valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year+ " (F"+sprinti("%0.2i",fhours(h))+")"
   res@mpOutlineDrawOrder="PostDraw"
   res@mpFillColor="grey75"
   res@cnInfoLabelOn=False
@@ -276,7 +238,6 @@ system("mkdir -p "+plot_dir)
   res@mpGeophysicalLineColor="black"
   res@mpGeophysicalLineThicknessF=2.0
   res@mpNationalLineThicknessF=2.0
-  ;res@cnFillMode="RasterFill"
   ;res@cnRasterSmoothingOn=True
   res@mpUSStateLineThicknessF=1.0
   res@mpCountyLineThicknessF=.5
@@ -289,18 +250,17 @@ system("mkdir -p "+plot_dir)
   res@gsnLeftStringFontHeightF=.01
   res@gsnRightStringFontHeightF=.01
   res@cnFillOn=True
-  res@cnFillColors=(/"transparent","deepskyblue1","darkorchid1","deeppink1","green3"/)
   res@mpFillOn=True
   res@cnFillMode="RasterFill"
-  res@cnRasterSmoothingOn=False
+  res@cnRasterSmoothingOn=True
   res@cnLevelSelectionMode="ExplicitLevels"
-  res@cnLevels=(/0.5,1.5,2.5,3.5/)
+  res@cnLevels=fspan(10,100,10)
+  res@cnFillColors=(/2,15,25,35,45,55,65,75,85,95,105/)
   res@cnLinesOn=False
   res@mpLimitMode="LatLon"
   res@gsnDraw=False
   ;res@mpProjection="Mercator"
   res@mpProjection="LambertConformal"
-
   if scriptregion.eq."spac" then
      res@mpLambertParallel1F = -33.0         ; two parallels
      res@mpLambertParallel2F = -45.0
@@ -336,65 +296,26 @@ system("mkdir -p "+plot_dir)
 
   res@cnLineLabelInterval=1
   res@cnLineLabelDensityF=1.5
-  plot(0) = gsn_csm_contour_map(wks,ptypesprod,res)       ; create a default plot
+  plot(0) = gsn_csm_contour_map(wks,slpprod,res)       ; create a default plot
 
 ;---------------------------------------------------------------------
 
   res@gsnLeftString="GFSv16 fcst init. "+hourm+"Z "+daym+" "+months(toint(monthm))+ " " +yearm+" valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year+ " (F"+sprinti("%0.2i",fhours(h))+")"
-  plot(1) = gsn_csm_contour_map(wks,ptypespara,res)       ; create a default plot
+  plot(1) = gsn_csm_contour_map(wks,slppara,res)       ; create a default plot
 
 ;-------------------------------------------------
-
-  resprecip=True
-  resprecip=res
-  resprecip@cnLevels:=(/0.5/)
-  resprecip@cnFillColors:=(/"transparent","beige"/)
-  resprecip@gsnLeftString="GFSv16 fcst minus GFSv15 fcst valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year+ " (F"+sprinti("%0.2i",fhours(h))+")"
-  resprecip@lbLabelStrings:=(/"no precip (GFSv16 fcst)","precip (GFSv16 fcst)"/)
-  plot(2) = gsn_csm_contour_map(wks,isprecip,resprecip)       ; create a default plot
-
-;------------------------------------------------
 
   resdif=True
   resdif=res
+  resdif@cnFillPalette=("BlueWhiteOrangeRed")
   delete(resdif@cnFillColors)
-  resdif@cnFillColors=(/"blue3","dodgerblue","lightskyblue","transparent","transparent","lightsalmon","orangered2","red4"/)
-  resdif@cnLevels:=(/-2.5,-1.5,-.5,0,.5,1.5,2.5/)
-  resdif@lbLabelAlignment="BoxCenters"
-  resdif@lbLabelStrings:=(/"-3","-2","-1","0","0","1","2","3"/)
-  resdif@gsnLeftString=" "
-  resdif@gsnRightString=" "
-  resdif@lbOrientation = "vertical"
-  resdif@pmLabelBarWidthF      = 0.065               ; default is shorter
-  resdif@pmLabelBarHeightF     = 0.6               ; default is taller
+  delete(resdif@cnLevels)
+  resdif@cnLevels:=ispan(-70,70,10)
+  resdif@gsnRightString="6-h Avg Low Cloud (%)"
+  resdif@gsnLeftString="GFSv16 fcst minus GFSv15 fcst valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year+ " (F"+sprinti("%0.2i",fhours(h))+")"
+  plot(2) = gsn_csm_contour_map(wks,dif,resdif)       ; create a default plot
 
-delete(resdif@mpProjection)
-delete(resdif@mpLimitMode)
-delete(resdif@mpMinLonF)
-delete(resdif@mpMaxLonF)
-delete(resdif@mpMinLatF)
-delete(resdif@mpMaxLatF)
-delete(resdif@mpLambertMeridianF)
-delete(resdif@mpLambertParallel1F)
-delete(resdif@mpLambertParallel2F)
-delete(resdif@mpOutlineDrawOrder)
-delete(resdif@mpFillOn)
-delete(resdif@mpDataBaseVersion)
-delete(resdif@mpOutlineBoundarySets)
-delete(resdif@mpGeophysicalLineColor)
-delete(resdif@mpGeophysicalLineThicknessF)
-delete(resdif@mpNationalLineColor)
-delete(resdif@mpNationalLineThicknessF)
-delete(resdif@mpUSStateLineColor)
-delete(resdif@mpUSStateLineThicknessF)
-delete(resdif@mpFillColor)
-delete(resdif@mpFillDrawOrder)
-delete(resdif@mpCountyLineThicknessF)
-
-  plot_dif=gsn_csm_contour(wks,dif,resdif)
-  overlay(plot(2),plot_dif)
-
-;-------------------------------------------------
+;---------------------------------------------------------------------
 
   resP=True
   resP@gsnMaximize=True
@@ -408,7 +329,7 @@ frame(wks)
 print("Deleting workstation")
 delete(wks)
 
-system("convert "+plot_dir+"/gfs_"+scriptregion+"_ptype_"+casename+"_"+sprinti("%0.1i",(h))+".png -trim +repage "+plot_dir+"/gfs_"+scriptregion+"_ptype_"+casename+"_"+sprinti("%0.1i",(h))+".png")              
+system("convert "+plot_dir+"/gfs_"+scriptregion+"_lowcloud_"+casename+"_"+sprinti("%0.1i",(h))+".png -trim +repage "+plot_dir+"/gfs_"+scriptregion+"_lowcloud_"+casename+"_"+sprinti("%0.1i",(h))+".png")              
 
 end do
 
