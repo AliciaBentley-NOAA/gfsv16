@@ -11,17 +11,17 @@ print("======================")
 print("Script has started!")
 print("======================")
 
-data_path = "/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16/Humberto2019/"
-beginyyyymmddhh = "2019090800"
-endyyyymmddhh = "2019091800"
+data_path = "/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16/Karen2019/"
+beginyyyymmddhh = "2019091600"
+endyyyymmddhh = "2019092600"
 int_inc = 12
 fcst_inc = 6
 
 beginyyyymmddhh_anl = beginyyyymmddhh 
-endyyyymmddhh_anl = "2019092800"         ;Trick: Add 10 days to endyyyymmddhh
+endyyyymmddhh_anl = "2019100600"         ;Add 10 days to endyyyymmddhh
 
 data_to_check = (/"gfs","rap","st4","retros"/)
-;data_to_check = (/"gfs"/)
+;data_to_check = (/"rap"/)
 
 ;==================================================================
 ;==================================================================
@@ -212,7 +212,7 @@ if (model .eq. "rap")
 ;          print("RAP analysis file rap."+ymd+".t"+hour+"z.awip32f00.grib2 found!")
        else
           print("RAP analysis file rap."+ymd+".t"+hour+"z.awip32f00.grib2 is missing")
-          print("from "+data_path+"/analyses/")
+          print("from "+data_path+"analyses/")
           print("*******")
           system("sleep 3")
        end if
@@ -250,7 +250,7 @@ if (model .eq. "st4")
 ;          print("Stage-IV analysis file ST4."+ymd+hour+".06h.grb found!")
        else
           print("Stage-IV analysis file ST4."+ymd+hour+".06h.grb is missing")
-          print("from "+data_path+"/analyses/")
+          print("from "+data_path+"analyses/")
           print("*******")
           system("sleep 3")
        end if
