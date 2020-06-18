@@ -222,7 +222,7 @@ print("======================")
           else if (thisdate .ge. retro_cdate3) .and. (thisdate .lt. retro_cdate4) then
                 print("Initialized in v16retro3e!")
           
-                cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16retro3e/"+ymdm+hourm+"/gfsa.tar" + \
+                cmd = "htar -xvf /NCEPDEV/emc-global/5year/glopara/HERA/gfsv16/v16retro3e/"+ymdm+hourm+"/gfsa.tar" + \
                         " ./gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
                 print(cmd)
                 system(cmd)
