@@ -24,11 +24,11 @@ maxlon=-72.5
 
 echo "submitting ${REGIONNAME} domain script for ${CYCLE}"
 
-cat > ${DATA_PATH}/${CASE}/${CYCLE}/plot_gfs_${REGIONNAME}_${CYCLE}.csh <<EOF
+cat > ${DATA_PATH}/${CASE}/${CYCLE}/plot_std_${REGIONNAME}_${CYCLE}.csh <<EOF
 #!/bin/csh
 #SBATCH --account=ovp
 #SBATCH --job-name=${REGIONNAME}_std_${CYCLE}
-#SBATCH --output=gfs_plot_${REGIONNAME}_${CYCLE}.%j.out
+#SBATCH --output=plot_${REGIONNAME}_${CYCLE}.%j.out
 #SBATCH -q batch
 #SBATCH --nodes=1
 #SBATCH --time=3:00:00
@@ -52,7 +52,7 @@ exit
 
 EOF
 
-sbatch ${DATA_PATH}/${CASE}/${CYCLE}/plot_gfs_${REGIONNAME}_${CYCLE}.csh
+sbatch ${DATA_PATH}/${CASE}/${CYCLE}/plot_std_${REGIONNAME}_${CYCLE}.csh
 sleep 5
 
 
@@ -62,11 +62,11 @@ else
 
 echo "submitting ${DOMAIN} domain script for ${CYCLE}"
 
-cat > ${DATA_PATH}/${CASE}/${CYCLE}/plot_gfs_${DOMAIN}_${CYCLE}.sh <<EOF
+cat > ${DATA_PATH}/${CASE}/${CYCLE}/plot_std_${DOMAIN}_${CYCLE}.sh <<EOF
 #!/bin/bash
 #SBATCH --account=ovp
 #SBATCH --job-name=${DOMAIN}_std_${CYCLE}
-#SBATCH --output=gfs_plot_${DOMAIN}_${CYCLE}.%j.out
+#SBATCH --output=plot_${DOMAIN}_${CYCLE}.%j.out
 #SBATCH -q batch
 #SBATCH --nodes=1
 #SBATCH --time=6:00:00
@@ -89,7 +89,7 @@ exit
 
 EOF
 
-sbatch ${DATA_PATH}/${CASE}/${CYCLE}/plot_gfs_${DOMAIN}_${CYCLE}.sh
+sbatch ${DATA_PATH}/${CASE}/${CYCLE}/plot_std_${DOMAIN}_${CYCLE}.sh
 sleep 5
 
 fi

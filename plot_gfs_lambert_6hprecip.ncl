@@ -174,7 +174,7 @@ print("======================")
 
 ;-----------------------------------------------------------------------------------
 
-  if (scriptregion .eq. "epac" .or. scriptregion .eq. "wpac" .or. scriptregion .eq. "spac" .or. scriptregion .eq. "us" .or. scriptregion .eq. "nwatl") then
+  if (scriptregion .eq. "pr" .or. scriptregion .eq. "ak" .or. scriptregion .eq. "epac" .or. scriptregion .eq. "wpac" .or. scriptregion .eq. "spac" .or. scriptregion .eq. "us" .or. scriptregion .eq. "nwatl") then
      CONUS_dom = False
   else
      CONUS_dom = True
