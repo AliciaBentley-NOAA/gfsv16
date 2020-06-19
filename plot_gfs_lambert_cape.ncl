@@ -202,7 +202,7 @@ else if (NA_dom .eq. False) then
 
        print("NA_dom .eq. False, so looking for GFS analysis...")
 
-       anlfile ="../analyses/gfs."+ymd+".t"+hour+"z.pgrb2.1p00.f000.grib2"
+       anlfile ="../analyses/gfs."+ymd+".t"+hour+"z.pgrb2.0p25.f000.grib2"
        if (isfilepresent(anlfile)) then
           print("GFS analysis file found!")
        else

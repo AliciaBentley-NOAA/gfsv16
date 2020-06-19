@@ -19,9 +19,10 @@ export FHR_INC=6
 export PLOT_FCST=true
 export PLOT_LLVL=true
 export PLOT_PPCP=true
-export PLOT_REFL=false    # leave reflectivity false unless going back and adding for select cases
+export PLOT_SNOW=false    # leave false unless you have asked for NOHRSC snowfall analyses from Alicia
+export PLOT_REFL=false    # leave false unless going back and adding comp. reflectivity for select cases
 
-#for cycle in 2019091000
+#for cycle in 2019121000
 for cycle in 2019091600 2019091612 2019091700 2019091712 2019091800 2019091812 2019091900 2019091912 2019092000 2019092012 2019092100 2019092112 2019092200 2019092212 2019092300 2019092312 2019092400 2019092412 2019092500 2019092512 2019092600
 do
 
@@ -53,6 +54,14 @@ echo "*********************"
 if [ $PLOT_PPCP = true ]; then
    echo "Create/submit script to plot ${CYCLE} GFSv15/v16 precip forecasts!"
    ${SCRIPTS_PATH}/create_plot_precip.sh
+   sleep 3
+fi
+
+
+echo "*********************"
+if [ $PLOT_SNOW = true ]; then
+   echo "Create/submit script to plot ${CYCLE} GFSv15/v16 snowfall forecasts!"
+   ${SCRIPTS_PATH}/create_plot_snow.sh
    sleep 3
 fi
 

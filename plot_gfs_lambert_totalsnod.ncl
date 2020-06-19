@@ -172,85 +172,77 @@ print("======================")
 
        prod_gfs=addfile("gfsv15."+ymdm+".t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))+".grib2","r")
 
-;-----------------------------------------------------------------------------------
+; ----------------------------------------------------------------------------------
 
-  if (scriptregion .eq. "ak" .or. scriptregion .eq. "pr" .or. scriptregion .eq. "epac" .or. scriptregion .eq. "wpac" .or. scriptregion .eq. "spac" .or. scriptregion .eq. "hawaii")
-     NA_dom = False
-  else
-     NA_dom = True
-  end if
-
-print("scriptregion: "+scriptregion+" | NA_dom: "+NA_dom(0))
-
-;-------------
-
-if (NA_dom .eq. True) then
-
-       print("NA_dom .eq. True, so looking for RAP analysis...")
-
-       anlfile = "../analyses/rap."+ymd+".t"+hour+"z.awip32f00.grib2"
+       anlfile = "../analyses/sfav2_CONUS_6h_"+ymd+hour+"_grid184.grb2"
        if (isfilepresent(anlfile)) then
-          print("RAP analysis file found!")
+          print("NOHRSC analysis file found!")
        else
-          print("RAP analysis file is missing...")
+          print("NOHRSC analysis file is missing...")
           system("pwd")
        end if
 
-       anl=addfile("../analyses/rap."+ymd+".t"+hour+"z.awip32f00.grib2","r")
-
-else if (NA_dom .eq. False) then
-
-       print("NA_dom .eq. False, so looking for GFS analysis...")
-
-       anlfile ="../analyses/gfs."+ymd+".t"+hour+"z.pgrb2.0p25.f000.grib2"
-       if (isfilepresent(anlfile)) then
-          print("GFS analysis file found!")
-       else
-          print("GFS analysis file is missing...")
-       end if
-
-       anl=addfile("../analyses/gfs."+ymd+".t"+hour+"z.pgrb2.0p25.f000.grib2","r")
-
-end if
-end if
+       anl=addfile(anlfile,"r")
 
 
 ; ============================================================================
 ; ======================= Download data ======================================
 ; ============================================================================ 
 
+   print("h: "+h+" fhours(h): "+fhours(h))
 
-   ; print(prod)
-   vnames:=getfilevarnames(prod_gfs)
-   slpprod = prod_gfs->GUST_P0_L1_GLL0(:,:)
-   slppara = para_gfs->GUST_P0_L1_GLL0(:,:)
+if (h.eq.0) then
+  gfsv15_array = new((/dimsizes(fdates),721,1440/),float)
+  gfsv16_array = new((/dimsizes(fdates),721,1440/),float)
+  gfsanl_array = new((/dimsizes(fdates),721,1440/),float)
+  nohrsc_array = new((/dimsizes(fdates),1377,2145/),float)
+end if
 
-   slpprod = (slpprod*1.94)  ; convert from m/s to kt
-   slppara = (slppara*1.94)
+      precipprod=prod_gfs->SNOD_P0_L1_GLL0
+      precippara=para_gfs->SNOD_P0_L1_GLL0
+      precipprod=precipprod*39.370    ; convert from mm to inches
+      precippara=precippara*39.370
+      gfsv15_array(h,:,:) = precipprod
+      gfsv16_array(h,:,:) = precippara
 
-   if (NA_dom .eq. True) then
-      slp_anl=anl->GUST_P0_L1_GLC0(:,:)
-      slp_anl=(slp_anl*1.94)
-      lat2d := anl->gridlat_0
-      lon2d := anl->gridlon_0
-      slp_anl@lat2d = lat2d
-      slp_anl@lon2d = lon2d
+      precip_anl = anl->ASNOW_P8_L1_GLC0_acc(:,:)
+;      printVarSummary(precip_anl)
+      precip_anl=precip_anl*39.3701
+      lat2d = anl->gridlat_0
+      lon2d = anl->gridlon_0
+      precip_anl@lat2d = lat2d
+      precip_anl@lon2d = lon2d
+      nohrsc_array(h,:,:) = precip_anl
 
-   else if (NA_dom .eq. False)
-      slp_anl = anl->GUST_P0_L1_GLL0(:,:)
-      slp_anl = (slp_anl*1.94)
+   if (fhours(h).lt.6) then
+      precipplotprod=precipprod*0.0
+      precipplotpara=precippara*0.0
+      precipplot_anl=precip_anl*0.0
+      lat2d = anl->gridlat_0
+      lon2d = anl->gridlon_0
+      precipplot_anl@lat2d = lat2d
+      precipplot_anl@lon2d = lon2d
+   else
+      precipplotprod=gfsv15_array(h,:,:)-gfsv15_array(0,:,:)
+      precipplotpara=gfsv16_array(h,:,:)-gfsv16_array(0,:,:)
+      precipplotprod = where(precipplotprod .lt. 0, 0, precipplotprod) ;only show positive change
+      precipplotpara = where(precipplotpara .lt. 0, 0, precipplotpara) 
+
+      precipplot_anl=dim_sum_n_Wrap(nohrsc_array,0)
+      lat2d = anl->gridlat_0
+      lon2d = anl->gridlon_0
+      precipplot_anl@lat2d = lat2d
+      precipplot_anl@lon2d = lon2d
    end if
-   end if
 
-   dif = slpprod
-   dif = slppara - slpprod
+   copy_VarCoords(precipprod,precipplotprod)
+   copy_VarCoords(precippara,precipplotpara)
 
-;   dif_anl = slp_anl
-;   dif_anl = slppara - slp_anl
+   dif=precipplotprod
+   dif=precipplotpara-precipplotprod
 
-;   slpprod = smth9_Wrap(slpprod,0.50,-0.25,False)
-;   slppara = smth9_Wrap(slppara,0.50,-0.25,False)
-;   slp_anl = smth9_Wrap(slp_anl,0.50,0.25,False)
+
+
 
 
 ; ============================================================================
@@ -259,9 +251,9 @@ end if
 plot_dir = image_dir+"/"+casename+"/images/"+scriptyyyymmddhh+"/"
 system("mkdir -p "+plot_dir)
 
-  wks  = gsn_open_wks("png", plot_dir+"/gfs_"+scriptregion+"_gust_"+casename+"_"+sprinti("%0.1i",(h)))       
+  wks  = gsn_open_wks("png", plot_dir+"/gfs_"+scriptregion+"_totalsnod_"+casename+"_"+sprinti("%0.1i",(h)))       
   ;gsn_define_colormap(wks,"BlueWhiteOrangeRed") 
-  gsn_define_colormap(wks,"MPL_s3pcpn_l")
+  gsn_define_colormap(wks,"temp")
   ;gsn_define_colormap(wks,"MPL_jet") 
 
   plot=new(4,"graphic")
@@ -278,7 +270,7 @@ system("mkdir -p "+plot_dir)
   res@gsnMaximize=True
   res@tmXBLabelFontHeightF=.008
   res@tmYLLabelFontHeightF=.008
-  res@gsnRightString="Sfc. gust (kt)"
+  res@gsnRightString="Total SNOD (in.)"
   res@gsnAddCyclic=False
   res@gsnLeftString="GFSv15 fcst init. "+hourm+"Z "+daym+" "+months(toint(monthm))+ " " +yearm+" valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year+ " (F"+sprinti("%0.2i",fhours(h))+")"
   res@mpOutlineDrawOrder="PostDraw"
@@ -305,8 +297,9 @@ system("mkdir -p "+plot_dir)
   res@cnFillMode="RasterFill"
   res@cnRasterSmoothingOn=True
   res@cnLevelSelectionMode="ExplicitLevels"
-  res@cnFillColors=(/0,11,14,17,20,23,26,29,32,35,38,41,44,47,50,53,56,59,65,102/)
-  res@cnLinesOn=True
+  res@cnFillColors=(/"transparent","cyan","cyan3","dodgerblue","dodgerblue3","dodgerblue4","purple1","purple3","purple4","orchid1","orchid3","orchid4","peachpuff","peachpuff3","peachpuff4","brown1","brown3","brown4","azure2","azure3","azure4","white"/)
+  res@cnLevels=(/1,2,3,4,5,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36/)
+  res@cnLinesOn=False
   res@mpLimitMode="LatLon"
   res@gsnDraw=False
   ;res@mpProjection="Mercator"
@@ -343,21 +336,15 @@ system("mkdir -p "+plot_dir)
     res@mpGeophysicalLineThicknessF=2.0
   end if
 
-;; Change Contour Levels Here
-;; Last line without a semicolon will be used in all plots
-; res@cnLevels=ispan(6,60,3)
-; res@cnLevels=ispan(8,80,4)
-; res@cnLevels=ispan(10,100,5)
-  res@cnLevels=ispan(12,120,6)
 
   res@cnLineLabelInterval=1
   res@cnLineLabelDensityF=1.5
-  plot(0) = gsn_csm_contour_map(wks,slpprod,res)       ; create a default plot
+  plot(0) = gsn_csm_contour_map(wks,precipplotprod,res)       ; create a default plot
 
 ;---------------------------------------------------------------------
 
   res@gsnLeftString="GFSv16 fcst init. "+hourm+"Z "+daym+" "+months(toint(monthm))+ " " +yearm+" valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year+ " (F"+sprinti("%0.2i",fhours(h))+")"
-  plot(1) = gsn_csm_contour_map(wks,slppara,res)       ; create a default plot
+  plot(1) = gsn_csm_contour_map(wks,precipplotpara,res)       ; create a default plot
 
 ;-------------------------------------------------
 
@@ -366,21 +353,15 @@ system("mkdir -p "+plot_dir)
   resdif@cnFillPalette=("BlueWhiteOrangeRed")
   delete(resdif@cnFillColors)
   delete(resdif@cnLevels)
-  resdif@cnLevels:=fspan(-25,25,11)
+  resdif@cnLevels:=(/-8,-6,-4,-3,-2,-1,0,1,2,3,4,6,8/)
   resdif@gsnLeftString="GFSv16 fcst minus GFSv15 fcst valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year+ " (F"+sprinti("%0.2i",fhours(h))+")"
   plot(2) = gsn_csm_contour_map(wks,dif,resdif)       ; create a default plot
 
-; -----------------------------------------------
+;---------------------------------------------------------------------
 
-  if (NA_dom .eq. True) then
-     model_string = "RAP"
-  else if (NA_dom .eq. False) then
-     model_string = "GFS"
-  end if
-  end if
-
-  res@gsnLeftString=model_string+" analysis valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year
-  plot(3) = gsn_csm_contour_map(wks,slp_anl,res)       ; create a default plot
+  res@gsnRightString="Total Snowfall (in.)"
+  res@gsnLeftString="NOHRSC analysis valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year
+  plot(3) = gsn_csm_contour_map(wks,precipplot_anl,res)       ; create a default plot
 
 ;-------------------------------------------------
 
@@ -396,7 +377,7 @@ frame(wks)
 print("Deleting workstation")
 delete(wks)
 
-system("convert "+plot_dir+"/gfs_"+scriptregion+"_gust_"+casename+"_"+sprinti("%0.1i",(h))+".png -trim +repage "+plot_dir+"/gfs_"+scriptregion+"_gust_"+casename+"_"+sprinti("%0.1i",(h))+".png")              
+system("convert "+plot_dir+"/gfs_"+scriptregion+"_totalsnod_"+casename+"_"+sprinti("%0.1i",(h))+".png -trim +repage "+plot_dir+"/gfs_"+scriptregion+"_totalsnod_"+casename+"_"+sprinti("%0.1i",(h))+".png")              
 
 end do
 
