@@ -11,7 +11,7 @@ export SCRIPTS_PATH='/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16'
 export DATA_PATH='/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16'
 export IMAGES_PATH='/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16'
 
-export CASE='Karen2019'
+export CASE='easternNAbomb'
 export FHR_START=0
 export FHR_END=240
 export FHR_INC=6
@@ -19,14 +19,15 @@ export FHR_INC=6
 export PLOT_FCST=true
 export PLOT_LLVL=true
 export PLOT_PPCP=true
-export PLOT_SNOW=false    # leave false unless you have asked for NOHRSC snowfall analyses from Alicia
-export PLOT_REFL=false    # leave false unless going back and adding comp. reflectivity for select cases
+export PLOT_SNOD=false     # leave false unless you have asked for NOHRSC snowfall analyses from Alicia
+export PLOT_WEASD=false    # leave false unless you have asked for NOHRSC snowfall analyses from Alicia
+export PLOT_REFL=false     # leave false unless going back and adding comp. reflectivity for select cases
 
 #for cycle in 2019121000
-for cycle in 2019091600 2019091612 2019091700 2019091712 2019091800 2019091812 2019091900 2019091912 2019092000 2019092012 2019092100 2019092112 2019092200 2019092212 2019092300 2019092312 2019092400 2019092412 2019092500 2019092512 2019092600
+for cycle in 2019120600 2019120612 2019120700 2019120712 2019120800 2019120812 2019120900 2019120912 2019121000 2019121012 2019121100 2019121112 2019121200 2019121212 2019121300 2019121312 2019121400 2019121412 2019121500 2019121512 2019121600
 do
 
-for domain in us pr
+for domain in us nwatl
 do
 
 export CYCLE=${cycle}
@@ -59,8 +60,16 @@ fi
 
 
 echo "*********************"
-if [ $PLOT_SNOW = true ]; then
-   echo "Create/submit script to plot ${CYCLE} GFSv15/v16 snowfall forecasts!"
+if [ $PLOT_SNOD = true ]; then
+   echo "Create/submit script to plot ${CYCLE} GFSv15/v16 snow (SNOD) forecasts!"
+   ${SCRIPTS_PATH}/create_plot_snod.sh
+   sleep 3
+fi
+
+
+echo "*********************"
+if [ $PLOT_WEASD = true ]; then
+   echo "Create/submit script to plot ${CYCLE} GFSv15/v16 snow (WEASD) forecasts!"
    ${SCRIPTS_PATH}/create_plot_snow.sh
    sleep 3
 fi
