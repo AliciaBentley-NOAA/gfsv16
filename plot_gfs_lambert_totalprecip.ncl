@@ -36,11 +36,11 @@ print("======================")
 ;==================================================================
 
 ; Pre-defined domain definitions
-  minlatlist=(/15.0,35.0,25.0,31.0,40.0,25.5,35.0,42.0,41.0,34.0,40.0,34.0,24.5,12.5,10,20,1,-40,15/)
-  maxlatlist=(/60.0,75.0,50.0,43.0,50.0,37.5,44.0,50.0,49.5,43.0,48.0,42.5,35.0,35,27,47.5,60,-1,62.5/)
-  minlonlist=(/-135.0,160.0,-120,-125.0,-125.0,-108.0,-108.0,-110.0,-97.0,-97.0,-81.0,-86.0,-92.0,-105,-81,-95,110,137.5,-167.5/)
-  maxlonlist=(/-60.0,250.0,-72.5,-105.0,-107.0,-90.0,-92.0,-95.0,-80.5,-83.0,-66.5,-72.0,-76.0,-72.5,-55,-57.5,179,192.5,-115/)
-  regionlist=(/"us","ak","uszoom","sw","nw","t","cp","np","mw","ov","ne","ma","se","gom","pr","nwatl","wpac","spac","epac"/)
+  minlatlist=(/15.0,35.0,25.0,31.0,40.0,25.5,35.0,42.0,41.0,34.0,40.0,34.0,24.5,12.5,10,20,1,-40,15,10,3/)
+  maxlatlist=(/60.0,75.0,50.0,43.0,50.0,37.5,44.0,50.0,49.5,43.0,48.0,42.5,35.0,35,27,47.5,60,-1,62.5,29,35/)
+  minlonlist=(/-135.0,160.0,-120,-125.0,-125.0,-108.0,-108.0,-110.0,-97.0,-97.0,-81.0,-86.0,-92.0,-105,-81,-95,110,137.5,-167.5,-171,-136/)
+  maxlonlist=(/-60.0,250.0,-72.5,-105.0,-107.0,-90.0,-92.0,-95.0,-80.5,-83.0,-66.5,-72.0,-76.0,-72.5,-55,-57.5,179,192.5,-115,-141,-82/)
+  regionlist=(/"us","ak","uszoom","sw","nw","t","cp","np","mw","ov","ne","ma","se","gom","pr","nwatl","wpac","spac","epac","hi","epactc"/)
   if (isdefined("scriptregion")) then
      if (scriptregion .eq. "new")
         print("New domain requested. Script will fail if the following variables are not defined with command line arguments: regionname, minlat, minlon, maxlat, maxlon.")
@@ -174,7 +174,7 @@ print("======================")
 
 ;-----------------------------------------------------------------------------------
 
-  if (scriptregion .eq. "pr" .or. scriptregion .eq. "ak" .or. scriptregion .eq. "epac" .or. scriptregion .eq. "wpac" .or. scriptregion .eq. "spac" .or. scriptregion .eq. "us" .or. scriptregion .eq. "nwatl") then
+  if (scriptregion .eq. "pr" .or. scriptregion .eq. "ak" .or. scriptregion .eq. "epac" .or. scriptregion .eq. "wpac" .or. scriptregion .eq. "spac" .or. scriptregion .eq. "us" .or. scriptregion .eq. "nwatl" .or. scriptregion .eq. "atl" .or. scriptregion .eq. "hi" .or. scriptregion .eq. "epactc") then
      CONUS_dom = False
   else
      CONUS_dom = True
@@ -377,6 +377,16 @@ system("mkdir -p "+plot_dir)
     res@mpLambertMeridianF  = 160.0        ; central meridian
   else if scriptregion.eq."pr" then
     res@mpLambertMeridianF  = 294.0        ; central meridian
+  else if scriptregion.eq."atl" then
+    res@mpLambertMeridianF  = 355.0        ; central meridian
+    res@gsnAddCyclic =  True
+  else if scriptregion.eq."hi" then
+    res@mpLambertMeridianF  = 202.0        ; central meridian
+  else if scriptregion.eq."epactc" then
+    res@mpLambertMeridianF  = 260.0        ; central meridian
+  end if
+  end if
+  end if
   end if
   end if
   end if
