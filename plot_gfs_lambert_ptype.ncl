@@ -267,7 +267,7 @@ system("mkdir -p "+plot_dir)
   res@tmYLLabelFontHeightF=.008
   res@gsnRightString=tstring
   res@gsnAddCyclic=False
-  res@gsnLeftString="GFS Fcst init "+hourm+"Z "+daym+" "+months(toint(monthm))+ " " +yearm+" valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year+ " (F"+sprinti("%0.2i",fhours(h))+")"
+  res@gsnLeftString="GFSv15 fcst init. "+hourm+"Z "+daym+" "+months(toint(monthm))+ " " +yearm+" valid "+hour+"Z "+day+ " "+months(monthind)+ " " +year+ " (F"+sprinti("%0.2i",fhours(h))+")"
   res@mpOutlineDrawOrder="PostDraw"
   res@mpFillColor="grey75"
   res@cnInfoLabelOn=False
