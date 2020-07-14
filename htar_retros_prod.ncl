@@ -181,15 +181,17 @@ print("======================")
 ;Obtaining GEFSv16 forecast files
           print("Downloading GFSv16 forecast file from HPSS...")
 
-          retro_cdate5 = cd_inv_calendar(2020,5,19,00,00,00,timeunits,0)      ; Specify date formating changed
-          retro_cdate4 = cd_inv_calendar(2020,4,1,00,00,00,timeunits,0)      ; Specify date formating changed
+          retro_cdate5e = cd_inv_calendar(2018,10,13,00,00,00,timeunits,0)      ; Specify date formating changed
+          retro_cdate5s = cd_inv_calendar(2018,8,31,00,00,00,timeunits,0)      ; Specify date formating changed
+
+          retro_cdate4 = cd_inv_calendar(2020,5,19,00,00,00,timeunits,0)      ; Specify date formating changed
           retro_cdate3 = cd_inv_calendar(2019,12,1,00,00,00,timeunits,0)      ; Specify date formating changed
           retro_cdate2 = cd_inv_calendar(2019,9,1,00,00,00,timeunits,0)      ; Specify date formating changed
           retro_cdate1 = cd_inv_calendar(2019,6,1,00,00,00,timeunits,0)      ; Specify date formating changed
 
           print("thisdate: "+modelstrings)
 
-          if (thisdate .ge. retro_cdate5) then
+          if (thisdate .ge. retro_cdate4) then
                 print("Initialized in v16rt2 stream (realtime)!")
 
                 cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16rt2/"+ymdm+hourm+"/gfsa.tar" + \
@@ -204,10 +206,10 @@ print("======================")
 ;                cmd = "rm -fR gfs."+ymdm+"/"
 ;                system(cmd)
 
-          else if (thisdate .ge. retro_cdate4) .and. (thisdate .lt. retro_cdate5) then
-                print("Initialized in v16retro4e!")
+          else if (thisdate .ge. retro_cdate5s) .and. (thisdate .lt. retro_cdate5e) then
+                print("Initialized in v16retro5e!")
 
-                cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16retro4e/"+ymdm+hourm+"/gfsa.tar" + \
+                cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16retro5e/"+ymdm+hourm+"/gfsa.tar" + \
                         " ./gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
                 print(cmd)
                 system(cmd)
