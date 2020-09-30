@@ -11,9 +11,9 @@ print("======================")
 print("Script has started!")
 print("======================")
 
-image_path = "/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16/Karen2019/images/"
-beginyyyymmddhh = "2019091600"
-endyyyymmddhh = "2019092600"
+image_path = "/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16/Dorian2019/images/"
+beginyyyymmddhh = "2019082700"
+endyyyymmddhh = "2019090600"
 int_inc = 12
 
 ;==================================================================

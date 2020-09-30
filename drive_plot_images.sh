@@ -11,7 +11,7 @@ export SCRIPTS_PATH='/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16'
 export DATA_PATH='/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16'
 export IMAGES_PATH='/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16'
 
-export CASE='Barbara2019'
+export CASE='Dorian2019'
 export FHR_START=0
 export FHR_END=240
 export FHR_INC=6
@@ -19,15 +19,15 @@ export FHR_INC=6
 export PLOT_FCST=true
 export PLOT_LLVL=true
 export PLOT_PPCP=true
-export PLOT_REFL=true 
+export PLOT_REFL=true
 export PLOT_SNOD=false     # leave false unless you have asked for NOHRSC snowfall analyses from Alicia
 export PLOT_WEASD=false    # leave false unless you have asked for NOHRSC snowfall analyses from Alicia
 
-#for cycle in 2019121000
-for cycle in 2019062712 2019062800 2019062812 2019062900 2019062912 2019063000 2019063012 2019070100 2019070112 2019070200 2019070212 2019070300 2019070312 2019070400 2019070412 2019070500 2019070512 2019070600 2019070612 2019070700 2019070712
+#for cycle in 2020020212
+for cycle in 2019082700 2019082712 2019082800 2019082812 2019082900 2019082912 2019083000 2019083012 2019083100 2019083112 2019090100 2019090112 2019090200 2019090212 2019090300 2019090312 2019090400 2019090412 2019090500 2019090512 2019090600
 do
 
-for domain in us hi epactc
+for domain in pr se nwatl us
 do
 
 export CYCLE=${cycle}

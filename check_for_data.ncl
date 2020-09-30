@@ -11,17 +11,17 @@ print("======================")
 print("Script has started!")
 print("======================")
 
-data_path = "/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16/Karen2019/"
-beginyyyymmddhh = "2019091600"
-endyyyymmddhh = "2019092600"
+data_path = "/scratch2/NCEPDEV/stmp3/Alicia.Bentley/scripts/gfsv16/Dorian2019/"
+beginyyyymmddhh = "2019082700"
+endyyyymmddhh = "2019090600"
 int_inc = 12
 fcst_inc = 6
 
 beginyyyymmddhh_anl = beginyyyymmddhh 
-endyyyymmddhh_anl = "2019100600"         ;Add 10 days to endyyyymmddhh
+endyyyymmddhh_anl = "2019091600"         ;Add 10 days to endyyyymmddhh
 
-data_to_check = (/"gfs","rap","st4","retros"/)
-;data_to_check = (/"rap"/)
+data_to_check = (/"rap","st4","gfs","retros"/)
+;data_to_check = (/"retros"/)
 
 ;==================================================================
 ;==================================================================

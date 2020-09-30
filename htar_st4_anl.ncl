@@ -139,6 +139,7 @@ print("======================")
 ;;;;; If not found, pull file from HPSS.
 
     ;;; define start and end dates for changing ST4 tarfile naming conventions on HPSS
+    st4_date4 = cd_inv_calendar(2020,7,19,00,00,00,timeunits,0)      ; Specify date formating changed
     st4_date3 = cd_inv_calendar(2020,2,19,00,00,00,timeunits,0)      ; Specify date formating changed
     st4_date2 = cd_inv_calendar(2019,8,13,00,00,00,timeunits,0)      ; Specify date formating changed
     st4_date1 = cd_inv_calendar(2017,4,27,00,00,00,timeunits,0)      ; Specify date when HPSS changed
@@ -158,6 +159,8 @@ print("======================")
 
           print("Downloading Stage-IV file analysis file from HPSS")
 
+
+    if (thisdate .lt. st4_date4) then
              cmd = "htar -xvf /NCEPPROD/hpssprod/runhistory/rh"+year+"/"+str_get_cols(ymd,0,5)+"/"+ymd+"/"+st4tar+"."+ymd+".tar" + \
                    " ./ST4."+modelstrings+".06h.gz"
              system(cmd)
@@ -167,6 +170,18 @@ print("======================")
 
              cmd = "mv ST4."+modelstrings+".06h ./ST4."+modelstrings+".06h.grb"
              system(cmd)
+
+     else
+             cmd = "htar -xvf /NCEPPROD/hpssprod/runhistory/rh"+year+"/"+str_get_cols(ymd,0,5)+"/"+ymd+"/"+st4tar+"."+ymd+".tar" + \
+                   " ./st4_conus."+modelstrings+".06h.grb2"
+             system(cmd)
+
+             cmd = "mv st4_conus."+modelstrings+".06h.grb2 ./ST4."+modelstrings+".06h.grb"
+             system(cmd)
+
+     end if
+
+
 
 end do
 

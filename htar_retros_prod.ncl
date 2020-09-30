@@ -152,9 +152,9 @@ print("======================")
 
   do h=0,dimsizes(fdates)-1
     ;print((/fhours(h)/))
-    thisdate=fdates(h)
-    thisdate@units=timeunits
-    modelstrings=tostring(ut_calendar(thisdate,-3))
+    intdate=datestart
+    intdate@units=timeunits
+    modelstrings=tostring(ut_calendar(intdate,-3))
     ms=tostring(ut_calendar(datemodel,-3))
     ;model date
     yearm=str_get_cols(ms,0,3)
@@ -178,21 +178,46 @@ print("======================")
   print("Int: YYYYMMDDHH (FXXX): "+ymdm+hourm+" (F"+sprinti("%0.3i",fhours(h))+")")
 ; ==========================================================================
 
-;Obtaining GEFSv16 forecast files
+;Obtaining GFSv16 forecast files
           print("Downloading GFSv16 forecast file from HPSS...")
+
+          retro_cdate6 = cd_inv_calendar(2020,8,20,12,00,00,timeunits,0)      ; Specify date formating changed
 
           retro_cdate5e = cd_inv_calendar(2018,10,13,00,00,00,timeunits,0)      ; Specify date formating changed
           retro_cdate5s = cd_inv_calendar(2018,8,31,00,00,00,timeunits,0)      ; Specify date formating changed
 
           retro_cdate4 = cd_inv_calendar(2020,5,19,00,00,00,timeunits,0)      ; Specify date formating changed
+
+          retro_cdate3d = cd_inv_calendar(2020,3,5,00,00,00,timeunits,0)      ; Specify date formating changed
+          retro_cdate3c = cd_inv_calendar(2020,2,23,00,00,00,timeunits,0)      ; Specify date formating changed
+
+          retro_cdate3b = cd_inv_calendar(2020,2,8,00,00,00,timeunits,0)      ; Specify date formating changed
+          retro_cdate3a = cd_inv_calendar(2020,1,27,00,00,00,timeunits,0)      ; Specify date formating changed
+
           retro_cdate3 = cd_inv_calendar(2019,12,1,00,00,00,timeunits,0)      ; Specify date formating changed
           retro_cdate2 = cd_inv_calendar(2019,9,1,00,00,00,timeunits,0)      ; Specify date formating changed
           retro_cdate1 = cd_inv_calendar(2019,6,1,00,00,00,timeunits,0)      ; Specify date formating changed
 
-          print("thisdate: "+modelstrings)
+          print("intdate: "+modelstrings)
+          print("Getting gfsv16!")
 
-          if (thisdate .ge. retro_cdate4) then
-                print("Initialized in v16rt2 stream (realtime)!")
+          if (intdate .ge. retro_cdate6) then
+                print("Initialized in v16rt2 stream [realtime (after /atmos)]!")
+
+                cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16rt2/"+ymdm+hourm+"/gfsa.tar" + \
+                        " ./gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
+                print(cmd)
+                system(cmd)
+
+                cmd = "mv gfs."+ymdm+"/"+hourm+"/atmos/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h)) + \
+                        " ./gfsv16."+ymdm+".t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))+".grib2"
+                system(cmd)
+
+;                cmd = "rm -fR gfs."+ymdm+"/"
+;                system(cmd)
+
+          else if (intdate .ge. retro_cdate4) .and. (intdate .lt. retro_cdate6) then
+                print("Initialized in v16rt2 stream [realtime (but before /atmos)]!")
 
                 cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16rt2/"+ymdm+hourm+"/gfsa.tar" + \
                         " ./gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
@@ -206,7 +231,7 @@ print("======================")
 ;                cmd = "rm -fR gfs."+ymdm+"/"
 ;                system(cmd)
 
-          else if (thisdate .ge. retro_cdate5s) .and. (thisdate .lt. retro_cdate5e) then
+          else if (intdate .ge. retro_cdate5s) .and. (intdate .lt. retro_cdate5e) then
                 print("Initialized in v16retro5e!")
 
                 cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16retro5e/"+ymdm+hourm+"/gfsa.tar" + \
@@ -221,22 +246,22 @@ print("======================")
 ;                cmd = "rm -fR gfs."+ymdm+"/"
 ;                system(cmd)
 
-          else if (thisdate .ge. retro_cdate3) .and. (thisdate .lt. retro_cdate4) then
+          else if (intdate .ge. retro_cdate3) .and. (intdate .lt. retro_cdate3a) .or. (intdate .ge. retro_cdate3b) .and. (intdate .lt. retro_cdate3c) .or. (intdate .ge. retro_cdate3d) .and. (intdate .lt. retro_cdate4) then
                 print("Initialized in v16retro3e!")
-          
+
                 cmd = "htar -xvf /NCEPDEV/emc-global/5year/glopara/HERA/gfsv16/v16retro3e/"+ymdm+hourm+"/gfsa.tar" + \
                         " ./gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
                 print(cmd)
                 system(cmd)
-          
+
                 cmd = "mv gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h)) + \
                         " ./gfsv16."+ymdm+".t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))+".grib2"
                 system(cmd)
-          
+
 ;                cmd = "rm -fR gfs."+ymdm+"/"
 ;                system(cmd)
 
-          else if (thisdate .ge. retro_cdate2) .and. (thisdate .lt. retro_cdate3) then
+          else if (intdate .ge. retro_cdate2) .and. (intdate .lt. retro_cdate3) then
                 print("Initialized in v16retro2e!")
 
                 cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16retro2e/"+ymdm+hourm+"/gfsa.tar" + \
@@ -251,7 +276,7 @@ print("======================")
 ;                cmd = "rm -fR gfs."+ymdm+"/"
 ;                system(cmd)
 
-          else if (thisdate .ge. retro_cdate1) .and. (thisdate .lt. retro_cdate2) then
+          else if (intdate .ge. retro_cdate1) .and. (intdate .lt. retro_cdate2) then
                 print("Initialized in v16retro1e!")
           
                 cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16retro1e/"+ymdm+hourm+"/gfsa.tar" + \
@@ -266,10 +291,10 @@ print("======================")
 ;                cmd = "rm -fR gfs."+ymdm+"/"
 ;                system(cmd)
 
-          else if (thisdate .lt. retro_cdate1) then
-                print("Initialized in v16retro0e!")
+          else if (intdate .lt. retro_cdate1) .or. (intdate .ge. retro_cdate3a) .and. (intdate .lt. retro_cdate3b) .or. (intdate .ge. retro_cdate3c) .and. (intdate .lt. retro_cdate3d) then
+                print("Initialized in v16retro0ex!")
           
-                cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16retro0e/"+ymdm+hourm+"/gfsa.tar" + \
+                cmd = "htar -xvf /NCEPDEV/emc-global/5year/glopara/HERA/gfsv16/v16retro0ex/"+ymdm+hourm+"/gfsa.tar" + \
                         " ./gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
                 print(cmd)
                 system(cmd)
@@ -287,6 +312,7 @@ print("======================")
           end if
           end if
           end if
+	  end if
 
 ;-----------------------------------------------------------------------------------
 
@@ -294,12 +320,13 @@ print("======================")
           print("Downloading GFSv15 forecast file from HPSS...")
 
           gfs_cdate3 = cd_inv_calendar(2020,2,26,00,00,00,timeunits,0)      ; Specify date formating changed
-          gfs_cdate2 = cd_inv_calendar(2019,6,12,00,00,00,timeunits,0)      ; Specify date formating changed
-          gfs_cdate1 = cd_inv_calendar(2017,7,20,00,00,00,timeunits,0)      ; Specify date formating changed
+          gfs_cdate2 = cd_inv_calendar(2019,6,12,12,00,00,timeunits,0)      ; Specify date formating changed
+          gfs_cdate1 = cd_inv_calendar(2018,12,15,00,00,00,timeunits,0)      ; Specify date formating changed
 
-	  print("thisdate: "+modelstrings)
+	  print("intdate: "+modelstrings)
+          print("Getting gfsv15!")
 
-          if (thisdate .ge. gfs_cdate3) then
+          if (intdate .ge. gfs_cdate3) then
                 print("Valid date is after GFS naming convention was FINALLY corrected!")
 
                 cmd = "htar -xvf /NCEPPROD/hpssprod/runhistory/rh"+yearm+"/"+str_get_cols(ymdm,0,5)+"/"+ymdm+"/com_gfs_prod_gfs."+ymdm+"_"+hourm+".gfs_pgrb2.tar" + \
@@ -314,7 +341,7 @@ print("======================")
 ;                cmd = "rm -fR gfs."+ymdm+"/"
 ;                system(cmd)
 
-           else if (thisdate .ge. gfs_cdate2 .and. thisdate .lt. gfs_cdate3) then
+           else if (intdate .ge. gfs_cdate2 .and. intdate .lt. gfs_cdate3) then
                 print("Valid date is after GFS moved to Dell")
 
                 cmd = "htar -xvf /NCEPPROD/hpssprod/runhistory/rh"+yearm+"/"+str_get_cols(ymdm,0,5)+"/"+ymdm+"/gpfs_dell1_nco_ops_com_gfs_prod_gfs."+ymdm+"_"+hourm+".gfs_pgrb2.tar" + \
@@ -329,34 +356,34 @@ print("======================")
 ;                cmd = "rm -fR gfs."+ymdm+"/"
 ;                system(cmd)
 
-           else if (thisdate .ge. gfs_cdate1 .and. thisdate .lt. gfs_cdate2) then
-                print("Valid date is before GFS moved to Dell")
+           else if (intdate .ge. gfs_cdate1 .and. intdate .lt. gfs_cdate2) then
+                print("Getting GFSv15 from its real-time archive (wasn't ops yet)")
 
-                cmd = "htar -xvf /NCEPPROD/hpssprod/runhistory/rh"+yearm+"/"+str_get_cols(ymdm,0,5)+"/"+ymdm+"/gpfs_hps_nco_ops_com_gfs_prod_gfs."+ymdm+hourm+".pgrb2_0p25.tar" + \
-                        " ./gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
-                ;print(cmd)
+                cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_C/Q2FY19/prfv3rt3/"+ymdm+hourm+"/gfsa.tar" + \
+                        " ./gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
+                print(cmd)
                 system(cmd)
-
-                cmd = "mv gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h)) + \
+                        
+                cmd = "mv gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h)) + \
                         " ./gfsv15."+ymdm+".t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))+".grib2"
                 system(cmd)
 
-;                cmd = "rm -fR gfs."+ymdm+hourm+"/"
+;                cmd = "rm -fR gfs."+ymdm+"/"
 ;                system(cmd)
 
-           else if (thisdate .lt. gfs_cdate1) then
-                print("Valid date is before GFS name change at 0000 UTC 20 July 2017")
+           else if (intdate .lt. gfs_cdate1) then
+                print("Getting GFSv15 from it's retrospective run (wasn't ops yet)")
 
-                cmd = "htar -xvf /NCEPPROD/hpssprod/runhistory/rh"+yearm+"/"+str_get_cols(ymdm,0,5)+"/"+ymdm+"/com2_gfs_prod_gfs."+ymdm+hourm+".pgrb2_0p25.tar" + \
-                        " ./gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
+                cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_C/Q2FY19/prfv3rt3s/"+ymdm+hourm+"/gfsa.tar" + \
+                        " ./gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
                 print(cmd)
                 system(cmd)
 
-                cmd = "mv gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h)) + \
-                        " ./gfs15."+ymdm+".t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))+".grib2"
+                cmd = "mv gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h)) + \
+                        " ./gfsv15."+ymdm+".t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))+".grib2"
                 system(cmd)
 
-;                cmd = "rm -fR gfs."+ymdm+hourm+"/"
+;                cmd = "rm -fR gfs."+ymdm+"/"
 ;                system(cmd)
 
            end if

@@ -183,10 +183,12 @@ if (fhours(h).eq.0) then
    slppara=slppara*0.
 else if (fhours(h).eq.6) then
    slpprod = prod_gfs->TCDC_P8_L214_GLL0_avg
-   slppara = para_gfs->TCDC_P8_L214_GLL0_avg
+;   slppara = para_gfs->TCDC_P8_L214_GLL0_avg
+   slppara = para_gfs->LCDC_P8_L214_GLL0_avg
 else if (fhours(h).ge.12) then
    slpprod = prod_gfs->TCDC_P8_L214_GLL0_avg6h
-   slppara = para_gfs->TCDC_P8_L214_GLL0_avg6h
+;   slppara = para_gfs->TCDC_P8_L214_GLL0_avg6h
+   slppara = para_gfs->LCDC_P8_L214_GLL0_avg6h
 end if
 end if
 end if
