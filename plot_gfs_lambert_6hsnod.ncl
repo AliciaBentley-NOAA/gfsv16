@@ -200,7 +200,7 @@ end if
 
       precipprod=prod_gfs->SNOD_P0_L1_GLL0
       precippara=para_gfs->SNOD_P0_L1_GLL0
-      precipprod=precipprod*39.370    ; convert from mm to inches
+      precipprod=precipprod*39.370    ; convert from m to inches
       precippara=precippara*39.370
       gfsv15_array(h,:,:) = precipprod
       gfsv16_array(h,:,:) = precippara

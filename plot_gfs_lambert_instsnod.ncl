@@ -193,7 +193,7 @@ print("======================")
       precipprod=prod_gfs->SNOD_P0_L1_GLL0
       precippara=para_gfs->SNOD_P0_L1_GLL0
       precip_anl = anl->SNOD_P0_L1_GLL0      
-      precipprod=precipprod*39.370    ; convert from mm to inches
+      precipprod=precipprod*39.370    ; convert from m to inches
       precippara=precippara*39.370
       precip_anl=precip_anl*39.370
 

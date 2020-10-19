@@ -200,7 +200,7 @@ end if
 
       precipprod=prod_gfs->WEASD_P0_L1_GLL0
       precippara=para_gfs->WEASD_P0_L1_GLL0
-      precipprod=precipprod*.03937*10    ; convert to inches
+      precipprod=precipprod*.03937*10    ; convert mm to inches and 10:1 ratio
       precippara=precippara*.03937*10
       gfsv15_array(h,:,:) = precipprod
       gfsv16_array(h,:,:) = precippara
