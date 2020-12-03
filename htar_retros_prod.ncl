@@ -205,7 +205,7 @@ print("======================")
                 print("Initialized in v16rt2 stream [realtime (after /atmos)]!")
 
                 cmd = "htar -xvf /NCEPDEV/emc-global/5year/emc.glopara/WCOSS_D/gfsv16/v16rt2/"+ymdm+hourm+"/gfsa.tar" + \
-                        " ./gfs."+ymdm+"/"+hourm+"/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
+                        " ./gfs."+ymdm+"/"+hourm+"/atmos/gfs.t"+hourm+"z.pgrb2.0p25.f"+sprinti("%0.3i",fhours(h))
                 print(cmd)
                 system(cmd)
 
