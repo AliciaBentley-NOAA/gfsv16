@@ -304,20 +304,39 @@ end if
 
       if (CONUS_dom .eq. True) then
 
+    st4_date = cd_inv_calendar(2020,7,19,00,00,00,timeunits,0)      ; Specify date formating changed
+;    print("st4_date: "+st4_date)
+    cur_date = cd_inv_calendar(toint(year),toint(month),toint(day),toint(hour),00,00,timeunits,0)
+;    print("cur_date: "+cur_date)
+
           if (fhours(h).eq.0) then
-             precip_anl=anl->A_PCP_GDS5_SFC_acc6h(:,:)
-             precip_anl=precip_anl*0.0
-             lat2d = anl->g5_lat_0
-             lon2d = anl->g5_lon_1
+             if (cur_date .lt. st4_date) then
+                 precip_anl=anl->A_PCP_GDS5_SFC_acc6h(:,:)
+                 precip_anl=precip_anl*0.0
+                 lat2d = anl->g5_lat_0
+                 lon2d = anl->g5_lon_1
+             else
+                 precip_anl=anl->APCP_P8_L1_GST0_acc(:,:)
+                 precip_anl=precip_anl*0.0
+                 lat2d = anl->gridlat_0
+                 lon2d = anl->gridlon_0
+             end if
              precip_anl@lat2d = lat2d
              precip_anl@lon2d = lon2d
              st4anl_array(h,:,:) = precip_anl
 
           else if (fhours(h).ge.6) then
-             precip_anl=anl->A_PCP_GDS5_SFC_acc6h(:,:)
-             precip_anl=precip_anl*.03937
-             lat2d = anl->g5_lat_0
-             lon2d = anl->g5_lon_1
+             if (cur_date .lt. st4_date) then
+                 precip_anl=anl->A_PCP_GDS5_SFC_acc6h(:,:)
+                 precip_anl=precip_anl*.03937
+                 lat2d = anl->g5_lat_0
+                 lon2d = anl->g5_lon_1
+             else
+                 precip_anl=anl->APCP_P8_L1_GST0_acc(:,:)
+                 precip_anl=precip_anl*.03937
+                 lat2d = anl->gridlat_0
+                 lon2d = anl->gridlon_0
+             end if
              precip_anl@lat2d = lat2d
              precip_anl@lon2d = lon2d
              delete(precipplot_anl)
